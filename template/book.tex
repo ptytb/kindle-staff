@@ -1,0 +1,108 @@
+\documentclass[article,oneside,final]{memoir}
+
+\setstocksize{6in}{4.5in}
+\settrimmedsize{\stockheight}{\stockwidth}{*}
+\settrims{0pt}{0pt}
+\settypeblocksize{\stockheight}{\stockwidth}{*}
+\setlrmargins{0pt}{*}{*} 
+\setulmargins{0pt}{*}{*}
+\setheadfoot{\onelineskip}{\onelineskip}
+\setheaderspaces{0pt}{*}{*}
+\fixthelayout
+
+\usepackage[pdftex,
+	pdfauthor={[% author %]},
+	pdftitle={[% title %]},
+	plainpages=false,pdfpagelabels,
+	pagebackref=true,
+	unicode
+	]{hyperref}
+
+\usepackage{bookmark}
+
+\title{[% title %]}
+\author{[% author %]}
+
+\begin{document}
+
+\begin{lilypond}
+\version "2.19.25"
+[% PROCESS paper_setup %]
+\end{lilypond}
+
+[% FOREACH s = scores %]
+	[% IF s.midi != 128 %]
+            \section{[% s.name %], [% s.instrument %]}
+            [% INCLUDE score %]
+            \newpage
+	[% END %]
+[% END %]
+
+\end{document}
+
+[% BLOCK score %]
+[% IF s.tuning %]
+Tuning: [% s.human_tuning %]
+[% END %]
+\par \noindent
+\begin{lilypond}
+    song = {
+        [% s.score %]
+    }
+    \score {
+        [% PROCESS score_setup %]
+        <<
+        \new Staff {
+            [% s.clef %]
+            \omit StringNumber
+	    \set Staff.midiInstrument = #"[% s.instrument %]"
+            \song
+        }
+	[% IF s.midi >= 24 and s.midi <= 37 or s.midi == 105 %]
+        \new TabStaff {
+	    [% IF s.tuning %]
+            \set TabStaff.stringTunings = \stringTuning <[% s.tuning %]>
+	    [% END %]
+            \song
+        }
+	[% END %]
+        >>
+    }
+\end{lilypond}
+[% END %]
+
+[% BLOCK paper_setup %]
+\paper {
+     indent = 0
+     short-indent = 0
+     left-margin = 0
+     horizontal-shift = 0
+     check-consistency = ##t
+}
+[% END %]
+
+[% BLOCK score_setup %]
+\layout {
+    \context {
+        \Staff 
+    }
+
+    \context {
+        \Score
+            \override BarNumber.direction = #UP
+            \override BarNumber.self-alignment-X = #CENTER
+            \override BarNumber.X-offset = #2
+    }
+
+    \context {
+        \Voice
+            %\remove "Tuplet_engraver"
+            \remove "Forbid_line_break_engraver"
+            \override Beam.breakable = ##t
+            \override Glissando.breakable = ##t
+            \override Glissando.after-line-breaking = ##t
+            tupletFullLength = ##f
+    }
+}
+[% END %]
+
