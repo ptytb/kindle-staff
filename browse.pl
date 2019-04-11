@@ -1,14 +1,17 @@
 #!/usr/bin/perl
 
-use Modern::Perl 2012;
-use strict; 
+use Modern::Perl 2018;
+use strict;
 use warnings;
 
 use DBI;
 use Tk;
 use Tk::TableMatrix;
 use Tk::TableMatrix::Spreadsheet;
-use Switch;
+use experimental qw( switch );
+
+use lib '.';
+use generate qw(generate);
 
 my $db = DBI->connect("dbi:SQLite:dbname=db/jelly.db","","");
 $db->{sqlite_unicode} = 1;
@@ -58,28 +61,29 @@ sub action
     my $index = $data->{"$row,0"};
     print "$index\n";
 
-    switch ($state)
+    given ($state)
     {
-        case 0 {
+        when (0) {
             menu($q_sel_artist);
             $state = 1;
         }
 
-        case 1 {
+        when (1) {
             menu($q_sel_song, $index);
             $state = 2;
         }
 
-        case 2 {
+        when (2) {
             $song_id = $index;
             menu($q_sel_score, $index);
             $state = 3;
         }
 
-        case 3 {
+        when (3) {
             $mw->destroy;
             my $score_id = $index;
-            system "perl ./generate.pl $song_id $score_id";
+            generate($song_id, $score_id);
+            # system "perl ./generate.pl $song_id $score_id";
             exit;
         }
     }
@@ -108,4 +112,3 @@ sub menu
 
     $table->configure(-rows => $r, -state => 'disabled');
 }
-
