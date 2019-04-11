@@ -1,0 +1,6 @@
+libdbd-sqlite3-perl
+libtk-tablematrix-perl
+perl-tk
+libdbi-perl
+libmodern-perl-perl
+

@@ -79,7 +79,7 @@ sub action
         case 3 {
             $mw->destroy;
             my $score_id = $index;
-            system "./generate.pl $song_id $score_id";
+            system "perl ./generate.pl $song_id $score_id";
             exit;
         }
     }

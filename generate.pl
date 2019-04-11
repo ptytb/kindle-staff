@@ -11,6 +11,9 @@ use DBI;
 use Template;
 use Data::Dumper;
 
+use File::Path qw(remove_tree);
+use File::Copy;
+
 my $instruments = {
      1	 => "acoustic grand",
      2	 => "bright acoustic",
@@ -304,13 +307,18 @@ sub cut_clef
 
 sub compile
 {
-	chdir("tex/");
-	system("rm -rf out/");
+	chdir "tex/";
+	remove_tree('out/', {verbose => 0, keep_root => 1});
+	
 	system("lilypond-book --output=out --pdf jelly.tex");
-	chdir("out/");
+    system("lilypond-book --output=out --pdf jelly.tex");
+	
+	chdir 'out/';
+	
 	system("pdflatex jelly");
+	
 	mkdir("../../pdf/$_[0]");
-	system("mv jelly.pdf \"../../pdf/$_[0]/$_[1].pdf\"");
+	copy("jelly.pdf", "../../pdf/$_[0]/$_[1].pdf");
 }
 
 #print note_relative_c (-15), "\n";
