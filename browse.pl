@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 use Modern::Perl 2018;
 use strict;
 use warnings;
@@ -10,15 +8,15 @@ use Tk::TableMatrix;
 use Tk::TableMatrix::Spreadsheet;
 use experimental qw( switch );
 
-use lib '.';
+use lib q{.};
 use generate qw(generate);
 
-my $db = DBI->connect("dbi:SQLite:dbname=db/jelly.db","","");
+my $db = DBI->connect('dbi:SQLite:dbname=db/jelly.db', q{}, q{});
 $db->{sqlite_unicode} = 1;
 
-my $q_sel_artist = $db->prepare("SELECT JELLY_ARTIST_ID, NAME FROM ARTIST");
-my $q_sel_song = $db->prepare("SELECT ID, NAME FROM SONG WHERE ARTIST_ID = ?");
-my $q_sel_score = $db->prepare("SELECT ID, JELLY_SCORE_ID FROM SCORE WHERE SONG_ID = ?");
+my $q_sel_artist = $db->prepare('SELECT JELLY_ARTIST_ID, NAME FROM ARTIST');
+my $q_sel_song = $db->prepare('SELECT ID, NAME FROM SONG WHERE ARTIST_ID = ?');
+my $q_sel_score = $db->prepare('SELECT ID, JELLY_SCORE_ID FROM SCORE WHERE SONG_ID = ?');
 
 my $data = {};
 my $state = 1;
@@ -27,7 +25,7 @@ my $song_id;
 
 my $mw = MainWindow->new;
 
-my $table = $mw->Scrolled("Spreadsheet",
+my $table = $mw->Scrolled('Spreadsheet',
 -drawmode => 'slow',
 -titlecols => 0,
 -titlerows => 0,
@@ -37,7 +35,7 @@ my $table = $mw->Scrolled("Spreadsheet",
 -colstretchmode=>'all',
 -sparsearray => 0,
 -cache => 0,
--scrollbars => "osoe",
+-scrollbars => 'osoe',
 -selectmode => 'extended',
 -selecttype => 'row',
 -variable => $data,
@@ -49,7 +47,7 @@ $mw->update;
 my $xpos = int(($mw->screenwidth  - $mw->width ) / 2);
 my $ypos = int(($mw->screenheight - $mw->height) / 2);
 $mw->geometry("+$xpos+$ypos");
-&menu($q_sel_artist);
+menu($q_sel_artist);
 MainLoop;
 
 sub action
@@ -96,7 +94,7 @@ sub menu
     $table->configure(-state => 'normal');
     $table->deleteRows(0, $table->cget(-rows));
 
-    if (defined($index)) {
+    if (defined $index) {
         $query->execute($index);
     } else {
         $query->execute();

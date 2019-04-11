@@ -5,4 +5,4 @@ libdbd-sqlite3-perl libtk-tablematrix-perl perl-tk libdbi-perl libmodern-perl-pe
 
 CPAN
 ----
-cpan -I DBI DBD::SQLite Tk Tk::TableMatrix Modern::Perl
+cpan -I DBI DBD::SQLite Tk Tk::TableMatrix Modern::Perl LWP::UserAgent
