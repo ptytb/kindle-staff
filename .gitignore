@@ -1,6 +1,6 @@
-db/
-pdf/
-tex/
+db/*
+pdf/*
+tex/*
 *.sw?
 *.exe
 
